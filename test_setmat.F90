@@ -12,6 +12,8 @@ program setmat
   call reset_band()
   call test_nest4()
   call reset_band()
+  call test_nest5()
+  call reset_band()
 
   print *, 'Late SINE'
   call test_nest1l()
@@ -21,6 +23,8 @@ program setmat
   call test_nest3l()
   call reset_band()
   call test_nest4l()
+  call reset_band()
+  call test_nest5l()
   call reset_band()
 
   contains
@@ -48,6 +52,12 @@ program setmat
 #undef PAR_METHOD3
 #undef TEST_SUBROUTINE_NAME
 
+#define PAR_METHOD4
+#define TEST_SUBROUTINE_NAME test_nest5
+#include "test_nest.tpl"
+#undef PAR_METHOD4
+#undef TEST_SUBROUTINE_NAME
+
 #define LATE_SINE
 
 #define TEST_SUBROUTINE_NAME test_nest1l
@@ -70,5 +80,11 @@ program setmat
 #define TEST_SUBROUTINE_NAME test_nest4l
 #include "test_nest.tpl"
 #undef PAR_METHOD3
+#undef TEST_SUBROUTINE_NAME
+
+#define PAR_METHOD4
+#define TEST_SUBROUTINE_NAME test_nest5l
+#include "test_nest.tpl"
+#undef PAR_METHOD4
 #undef TEST_SUBROUTINE_NAME
 end program setmat
