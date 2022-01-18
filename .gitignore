@@ -1,0 +1,6 @@
+a.out
+obj
+*.mod
+*.o
+.*.sw?
+test_setmat
