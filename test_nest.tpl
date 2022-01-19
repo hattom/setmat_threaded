@@ -30,7 +30,7 @@
     integer :: ipass
     integer, parameter :: npasses=2
 #endif
-    integer, parameter :: ni=100, nj=100, nk=200, nl=100
+    integer, parameter :: ni=100, nj=100, nk=200, nl=210
     real(kind=r8) :: ri, rj, rk, rl
     real(kind=r8) :: contrib
 #ifdef _OPENMP
@@ -103,6 +103,7 @@ end do
 #endif
 #ifdef _OPENMP
     print *, band%data(30,30), omp_get_wtime() - time_start
+    ! print *, maxval(band%data(:,:)), minval(band%data(:,:))
 #endif
   end subroutine TEST_SUBROUTINE_NAME
 
