@@ -37,4 +37,5 @@ $(OBJDIR)/%.o: %.F90
 	$(FC) -c -o $@ $(FFLAGS) $<
 
 $(OBJDIR)/test_setmat_preproced.f90: test_setmat.F90 test_nest.tpl
+	@test -d $(@D) || mkdir -p $(@D)
 	$(FC) $(FFLAGS_PROPROC_ONLY) -o $@ $<
