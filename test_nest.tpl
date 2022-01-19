@@ -20,7 +20,9 @@
 
   
   subroutine TEST_SUBROUTINE_NAME
-    use omp_lib
+#ifdef _OPENMP
+    use omp_lib, only : omp_get_wtime, omp_get_num_threads, omp_get_thread_num
+#endif
     use iso_fortran_env, only : r8=>REAL64
     integer :: ii, ij, ik, il, irow, jcol
 #if defined(PAR_METHOD3) || defined(PAR_METHOD4)
@@ -30,8 +32,12 @@
     integer, parameter :: ni=100, nj=100, nk=200, nl=100
     real(kind=r8) :: ri, rj, rk, rl
     real(kind=r8) :: contrib
+#ifdef _OPENMP
     real(kind=r8) :: time_start
     time_start = omp_get_wtime()
+#else
+    print *, 'Compiled without OpenMP support, no timer activated'
+#endif
 #if defined(PAR_METHOD1) || defined(PAR_METHOD2)
     !$omp parallel do private(irow, jcol, contrib, ri, rj, rk, rl)
 #endif
@@ -42,8 +48,13 @@ block
 integer, parameter :: npasses=2
 do ipass=0,npasses-1
 #endif
+#ifdef _OPENMP
     tid = omp_get_thread_num()
     nthreads = omp_get_num_threads()
+#else
+    tid = 0
+    nthreads = 1
+#endif
 #ifdef PAR_METHOD3
     jcol_thread_min = ncols*tid/nthreads + 1
     jcol_thread_max = ncols*(tid+1)/nthreads
@@ -92,7 +103,9 @@ end block
 #endif
     !$omp end parallel
 #endif
+#ifdef _OPENMP
     print *, band%data(30,30), omp_get_wtime() - time_start
+#endif
   end subroutine TEST_SUBROUTINE_NAME
 
 #undef RI1
