@@ -25,6 +25,7 @@
     integer :: ii, ij, ik, il, irow, jcol
 #if defined(PAR_METHOD3) || defined(PAR_METHOD4)
     integer :: tid, jcol_thread_min, jcol_thread_max, nthreads
+    integer :: ipass
 #endif
     integer, parameter :: ni=100, nj=100, nk=200, nl=100
     real(kind=r8) :: ri, rj, rk, rl
@@ -35,10 +36,9 @@
     !$omp parallel do private(irow, jcol, contrib, ri, rj, rk, rl)
 #endif
 #if defined(PAR_METHOD3) || defined(PAR_METHOD4)
-!$omp parallel private(ii, ij, ik, il, irow, jcol, contrib, tid, nthreads, ri, rj, rk, rl)
+!$omp parallel private(ii, ij, ik, il, irow, jcol, contrib, tid, nthreads, ri, rj, rk, rl, ipass)
 #ifdef PAR_METHOD4
 block
-integer :: ipass
 integer, parameter :: npasses=2
 do ipass=0,npasses-1
 #endif
