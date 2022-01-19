@@ -1,18 +1,22 @@
 COMPILER = GCC
 
-ifeq ($(COMPILER), GCC)
+lc = $(subst A,a,$(subst B,b,$(subst C,c,$(subst D,d,$(subst E,e,$(subst F,f,$(subst G,g,$(subst H,h,$(subst I,i,$(subst J,j,$(subst K,k,$(subst L,l,$(subst M,m,$(subst N,n,$(subst O,o,$(subst P,p,$(subst Q,q,$(subst R,r,$(subst S,s,$(subst T,t,$(subst U,u,$(subst V,v,$(subst W,w,$(subst X,x,$(subst Y,y,$(subst Z,z,$1))))))))))))))))))))))))))
+
+
+ifeq ($(call lc,$(COMPILER)), gcc)
 	FC = gfortran
 	FFLAGS = -O3 -fopenmp -Jobj
-	FFLAGS_PROPROC_ONLY = -E
-else ifeq ($(COMPILER), NVHPC)
-	FC=nvfortran
-	FFLAGS=-O3 -mp -stdpar=multicore
-else ifeq ($(COMPILER), Intel)
-	FC=ifort
-	FFLAGS=-O3 -qopenmp
+	# FFLAGS_PROPROC_ONLY = -E
+else ifeq ($(call lc,$(COMPILER)), nvhpc)
+	FC = nvfortran
+	FFLAGS=-O3 -mp -stdpar=multicore -module obj
+	# FFLAGS_PROPROC_ONLY = -E
+else ifeq ($(call lc,$(COMPILER)), intel)
+	FC = ifort
+	FFLAGS=-O3 -qopenmp -module obj
 endif
 
-LDFLAGS = 
+LDFLAGS =
 
 EXEC = test_setmat
 OBJDIR=obj
@@ -36,6 +40,8 @@ $(OBJDIR)/%.o: %.F90
 	@test -d $(@D) || mkdir -p $(@D)
 	$(FC) -c -o $@ $(FFLAGS) $<
 
+# Hard-code gfortran for fpp, since Intel has no "-E" flag, and Intel's fpp works differently
+# Revisit if we add compiler dependent preprocessing
 $(OBJDIR)/test_setmat_preproced.f90: test_setmat.F90 test_nest.tpl
 	@test -d $(@D) || mkdir -p $(@D)
-	$(FC) $(FFLAGS_PROPROC_ONLY) -o $@ $<
+	gfortran -E -fopenmp -o $@ $<
