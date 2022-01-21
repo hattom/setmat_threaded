@@ -58,8 +58,8 @@ do ipass=0,npasses-1
     jcol_thread_min = (ncols*tid)/nthreads + 1
     jcol_thread_max = (ncols*(tid+1))/nthreads
 #else
-    jcol_thread_min = (ncols*(tid + ipass))/(nthreads*npasses) + 1
-    jcol_thread_max = (ncols*(tid + ipass + 1))/(nthreads*npasses)
+    jcol_thread_min = (ncols*(tid*npasses + ipass))     / (nthreads*npasses) + 1
+    jcol_thread_max = (ncols*(tid*npasses + ipass + 1)) / (nthreads*npasses)
 #endif
 #endif
     do ii = 1,ni
