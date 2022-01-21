@@ -43,7 +43,7 @@
     !$omp parallel do private(irow, jcol, contrib, ri, rj, rk, rl)
 #endif
 #if defined(PAR_METHOD3) || defined(PAR_METHOD4)
-!$omp parallel private(ii, ij, ik, il, irow, jcol, contrib, tid, nthreads, ri, rj, rk, rl, ipass)
+!$omp parallel private(ii, ij, ik, il, irow, jcol, contrib, tid, nthreads, ri, rj, rk, rl, ipass, jcol_thread_min, jcol_thread_max)
 #ifdef PAR_METHOD4
 do ipass=0,npasses-1
 #endif
@@ -55,11 +55,11 @@ do ipass=0,npasses-1
     nthreads = 1
 #endif
 #ifdef PAR_METHOD3
-    jcol_thread_min = ncols*tid/nthreads + 1
-    jcol_thread_max = ncols*(tid+1)/nthreads
+    jcol_thread_min = (ncols*tid)/nthreads + 1
+    jcol_thread_max = (ncols*(tid+1))/nthreads
 #else
-    jcol_thread_min = ncols*(tid + nthreads*ipass)/(nthreads*npasses) + 1
-    jcol_thread_max = ncols*(tid + nthreads*ipass + 1)/(nthreads*npasses)
+    jcol_thread_min = (ncols*(tid + ipass))/(nthreads*npasses) + 1
+    jcol_thread_max = (ncols*(tid + ipass + 1))/(nthreads*npasses)
 #endif
 #endif
     do ii = 1,ni
@@ -97,6 +97,9 @@ do ipass=0,npasses-1
 #endif
 #if defined(PAR_METHOD3) || defined(PAR_METHOD4)
 #ifdef PAR_METHOD4
+    if(ipass == 0) then
+        !$omp barrier
+    endif
 end do
 #endif
     !$omp end parallel
